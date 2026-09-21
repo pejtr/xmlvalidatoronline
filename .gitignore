@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated Cloudflare bundle
+cloudflare/worker.generated.js
