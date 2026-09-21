@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = new URL("../dist/", import.meta.url);
 const OUT = new URL("./worker.generated.js", import.meta.url);
@@ -37,7 +38,7 @@ function walk(dir, prefix = "") {
   return output;
 }
 
-const files = walk(path.fileURLToPath(ROOT));
+const files = walk(fileURLToPath(ROOT));
 if (!files["/index.html"]) throw new Error("dist/index.html is required");
 
 const worker = `const FILES = ${JSON.stringify(files)};
@@ -88,4 +89,4 @@ export default {
 `;
 
 fs.writeFileSync(OUT, worker);
-console.log(`Generated ${path.fileURLToPath(OUT)} (${Buffer.byteLength(worker)} bytes)`);
+console.log(`Generated ${fileURLToPath(OUT)} (${Buffer.byteLength(worker)} bytes)`);
