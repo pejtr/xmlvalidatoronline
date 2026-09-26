@@ -1,0 +1,73 @@
+name: Probe Cloudflare token for OPTIHUB
+
+on:
+  push:
+    branches:
+      - ops/cf-optihub-token-probe
+    paths:
+      - .github/workflows/cf-optihub-token-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CF_ACCOUNT_ID: "94ff7c722ed74b9e613fb2d1b1315ed3"
+      TOKEN_OPTIHUB: ${{ secrets.CLOUDFLARE_API_TOKEN_OPTIHUB }}
+      TOKEN_DEFAULT: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TOKEN_CF_API: ${{ secrets.CF_API_TOKEN }}
+      TOKEN_CF_ALT: ${{ secrets.CLOUDFLARE_TOKEN }}
+    steps:
+      - name: Probe token scopes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          verify_token() {
+            candidate="$1"
+            for endpoint in               "https://api.cloudflare.com/client/v4/user/tokens/verify"               "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/tokens/verify"; do
+              response="$(curl -sS                 -H "Authorization: Bearer $candidate"                 -H "Content-Type: application/json"                 -w '\n%{http_code}'                 "$endpoint")"
+              code="$(tail -n1 <<<"$response")"
+              body="$(sed '$d' <<<"$response")"
+              if [ "$code" = "200" ] && jq -e '.success == true' <<<"$body" >/dev/null 2>&1; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          token=""
+          source_name=""
+          for pair in             "OPTIHUB:$TOKEN_OPTIHUB"             "DEFAULT:$TOKEN_DEFAULT"             "CF_API:$TOKEN_CF_API"             "CF_ALT:$TOKEN_CF_ALT"; do
+            name="${pair%%:*}"
+            candidate="${pair#*:}"
+            [ -n "$candidate" ] || continue
+            if verify_token "$candidate"; then
+              token="$candidate"
+              source_name="$name"
+              break
+            fi
+          done
+
+          [ -n "$token" ] || { echo "NO_VALID_TOKEN"; exit 1; }
+          echo "VALID_TOKEN_SOURCE=$source_name"
+
+          zone="$(curl -sS             -H "Authorization: Bearer $token"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/zones?name=optihub.cz&status=active")"
+          zone_id="$(jq -r '.result[0].id // empty' <<<"$zone")"
+          if [ -z "$zone_id" ]; then
+            echo "OPTIHUB_ZONE_ACCESS=NO"
+            exit 2
+          fi
+          echo "OPTIHUB_ZONE_ACCESS=YES"
+
+          worker="$(curl -sS             -H "Authorization: Bearer $token"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/workers/services/omniforge-api")"
+          if jq -e '.success == true' <<<"$worker" >/dev/null 2>&1; then
+            echo "OMNIFORGE_WORKER_ACCESS=YES"
+          else
+            echo "OMNIFORGE_WORKER_ACCESS=NO"
+            jq '{success,errors}' <<<"$worker"
+            exit 3
+          fi
