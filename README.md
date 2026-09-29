@@ -1,32 +1,57 @@
-# React + TypeScript + Vite
+# XML Validator Online
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A privacy-first browser utility for validating, formatting and minifying XML.
 
-Currently, two official plugins are available:
+## Current capabilities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- live XML well-formedness validation using the browser `DOMParser`
+- XML formatter
+- XML minifier
+- copy / clear / sample actions
+- no XML upload in the baseline version — input is processed locally in the browser
+- responsive React + TypeScript UI
 
-## React Compiler
+## Privacy boundary
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The current baseline performs XML parsing and transformations in the browser. The XML entered into the editor is not required to be sent to a backend for validation.
 
-## Expanding the Oxlint configuration
+## Roadmap
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Planned candidates visible in the application roadmap include:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+- XSD validation
+- file upload
+- API access
+- optional AI-assisted error explanations
+- later QA PRO integration when that product is release-ready
+
+Roadmap items are not claims of current functionality.
+
+## Stack
+
+- React 19
+- TypeScript
+- Vite 8
+- Cloudflare deployment tooling
+
+## Development
+
+```bash
+pnpm install
+pnpm dev
+pnpm build
+pnpm lint
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Cloudflare build:
+
+```bash
+pnpm cf:build
+```
+
+## Public project rationale
+
+This repository is intentionally public as a developer utility and collaboration surface. Production credentials and private ONYX / QA PRO internals do not belong here.
+
+For broader partner integrations, see:
+https://github.com/pejtr/onyx-partner-network
