@@ -146,3 +146,7 @@ footer {
   textarea { min-height: 360px; }
   footer { flex-direction: column; }
 }
+
+/* Production visual QA: enforce contrast even when browser/user-agent heading styles vary. */
+.shell, .shell .brand, .shell h1, .shell h2, .shell h3 { color: #e8edf7; }
+.shell .hero h1 { color: #f4f8ff; }
