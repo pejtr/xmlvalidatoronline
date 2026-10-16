@@ -61,7 +61,7 @@ https://github.com/pejtr/onyx-partner-network
 
 This repository is public. Read `AGENTS.md` and `docs/PUBLIC_REPO_NO_TRUST.md` before non-trivial changes. Public documentation must contain only public-safe information and must not imply production state without verification.
 
-## Experimental Heureka CZ feed lint (feature branch; not a certified integration)
+## Heureka CZ feed lint (live; unofficial and not certified)
 
 An opt-in browser-only panel checks a subset of the published [Heureka XML feed specification](https://sluzby.heureka.cz/napoveda/xml-feed/): XML syntax, root/shop items, required item fields, positive numeric price, HTTP(S) product URLs, duplicate IDs and URLs, and warnings for common recommended fields.
 
@@ -69,4 +69,4 @@ An opt-in browser-only panel checks a subset of the published [Heureka XML feed 
 - This is not an official Heureka validator, certification or compatibility guarantee.
 - Availability, destination product pages, category matching, Heureka CPC/Marketplace and shop terms are **not** verified.
 - Client-side size limit: two million characters; first 100 findings shown with full issue counts.
-- Feature implementation in this branch is not a production deployment.
+- Public Cloudflare Worker deployment was smoke-tested on 2026-10-16: https://xmlvalidatoronline.lmd-cf-bridge.workers.dev/ (HTTP 200, `/health`, browser scenarios).
