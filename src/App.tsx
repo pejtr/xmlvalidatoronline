@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { auditHeurekaFeed } from './heurekaFeed'
 import './App.css'
 
 const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -8,6 +9,19 @@ const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
     <author>ONYX QA</author>
   </book>
 </catalog>`
+
+const SAMPLE_HEUREKA_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<SHOP>
+  <SHOPITEM>
+    <ITEM_ID>sample-001</ITEM_ID>
+    <PRODUCTNAME>Demo ceramic mug 300 ml</PRODUCTNAME>
+    <PRICE_VAT>299</PRICE_VAT>
+    <URL>https://example.com/products/demo-mug</URL>
+    <CATEGORYTEXT>Home | Cups</CATEGORYTEXT>
+    <IMGURL>https://example.com/images/demo-mug.jpg</IMGURL>
+    <DELIVERY_DATE>0</DELIVERY_DATE>
+  </SHOPITEM>
+</SHOP>`
 
 type ValidationResult = {
   valid: boolean
@@ -56,6 +70,8 @@ function minifyXml(xml: string): string {
 
 function App() {
   const [xml, setXml] = useState(SAMPLE_XML)
+  const [showHeurekaAudit, setShowHeurekaAudit] = useState(false)
+  const heurekaReport = useMemo(() => showHeurekaAudit ? auditHeurekaFeed(xml) : null, [xml, showHeurekaAudit])
 
   const validation = useMemo<ValidationResult>(() => {
     if (!xml.trim()) return { valid: false, message: 'Paste XML to start.' }
@@ -98,6 +114,10 @@ function App() {
           <button onClick={() => runTransform('format')}>Format</button>
           <button onClick={() => runTransform('minify')}>Minify</button>
           <button onClick={() => setXml(SAMPLE_XML)}>Sample</button>
+          <button onClick={() => { setXml(SAMPLE_HEUREKA_XML); setShowHeurekaAudit(true) }}>Heureka sample</button>
+          <button onClick={() => setShowHeurekaAudit((value) => !value)} aria-pressed={showHeurekaAudit}>
+            {showHeurekaAudit ? 'Hide Heureka lint' : 'Heureka feed lint'}
+          </button>
           <button onClick={copyXml}>Copy</button>
           <button onClick={() => setXml('')}>Clear</button>
         </div>
@@ -115,6 +135,39 @@ function App() {
           <span>{validation.message}</span>
         </div>
       </section>
+
+      {heurekaReport && (
+        <section className="heureka-report" aria-label="Preliminary Heureka feed lint">
+          <h2>Heureka XML feed — preliminary checks</h2>
+          <p>
+            Unofficial, limited-scope lint based on public Heureka CZ XML documentation.
+            Runs locally in your browser. It does not verify live product pages, feed access,
+            category matching, customer verification or Marketplace eligibility.
+          </p>
+          <p>
+            <strong>{heurekaReport.itemCount} items</strong> · {heurekaReport.errorCount} errors · {heurekaReport.warningCount} warnings
+          </p>
+          {heurekaReport.findings.length === 0 ? (
+            <p>No issues found by these limited checks. This is not a full feed approval.</p>
+          ) : (
+            <ul className="heureka-findings">
+              {heurekaReport.findings.map((finding, index) => (
+                <li key={finding.code + '-' + index}>
+                  <strong>{finding.severity.toUpperCase()}</strong>
+                  {finding.itemNumber ? ' · Item ' + finding.itemNumber : ''}
+                  {' · ' + finding.message}
+                </li>
+              ))}
+            </ul>
+          )}
+          {heurekaReport.truncated && <p>Only the first 100 findings are shown; totals include all issues.</p>}
+          <p>
+            <a href="https://sluzby.heureka.cz/napoveda/xml-feed/" target="_blank" rel="noreferrer">
+              Official Heureka XML feed specification
+            </a>
+          </p>
+        </section>
+      )}
 
       <section className="features">
         <article>

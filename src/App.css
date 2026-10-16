@@ -150,3 +150,21 @@ footer {
 /* Production visual QA: enforce contrast even when browser/user-agent heading styles vary. */
 .shell, .shell .brand, .shell h1, .shell h2, .shell h3 { color: #e8edf7; }
 .shell .hero h1 { color: #f4f8ff; }
+
+/* Opt-in browser-only Heureka lint panel; no provider branding or certification claim. */
+.heureka-report {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #254769;
+  border-radius: 16px;
+  background: #0b1727;
+}
+.heureka-report p { color: #b3c2d6; }
+.heureka-findings {
+  max-height: 340px;
+  overflow: auto;
+  padding: 0 0 0 22px;
+  color: #dbe7f7;
+  line-height: 1.8;
+}
+.heureka-report a { color: #82bbff; }
