@@ -94,11 +94,38 @@ function App() {
   }
 
   return (
-    <main className="shell">
-      <header className="topbar">
-        <div className="brand">XML Validator Online</div>
-        <div className="privacy">Runs locally in your browser</div>
-      </header>
+    <div className="os-desktop" id="home">
+      <div className="ambient-scene" aria-hidden="true">
+        <div className="ambient-stars" />
+        <div className="ambient-horizon" />
+        <div className="ambient-planet"><div className="ambient-ring" /></div>
+        <div className="ambient-skyline" />
+        <div className="ambient-ground" />
+        <div className="ambient-scanlines" />
+      </div>
+      <div className="os-frame">
+        <header className="os-system-bar">
+          <div className="os-identity"><span aria-hidden="true">◈</span> ONYX OS <span className="version">1.0</span></div>
+          <nav aria-label="System navigation">
+            <a href="#xml-tool">XML TOOL</a>
+            <a href="#features">FEATURES</a>
+            <a href="#qa-pro">QA PRO</a>
+          </nav>
+          <span className="system-ready"><span className="ready-led" aria-hidden="true" /> LOCAL</span>
+        </header>
+        <div className="os-workspace">
+          <aside className="os-sidebar" aria-label="Quick navigation">
+            <a href="#home"><span aria-hidden="true">⌂</span>HOME</a>
+            <a href="#xml-tool" className="selected" aria-current="location"><span aria-hidden="true">⌘</span>XML TOOL</a>
+            <button type="button" onClick={() => setXml(SAMPLE_XML)}><span aria-hidden="true">▣</span>SAMPLE</button>
+            <a href="#features"><span aria-hidden="true">▤</span>FEATURES</a>
+            <a href="#qa-pro"><span aria-hidden="true">◇</span>QA PRO</a>
+          </aside>
+          <main className="shell">
+            <div className="window-header">
+              <strong><span aria-hidden="true">▣</span> XML VALIDATOR ONLINE</strong>
+              <span className="privacy">Runs locally in your browser</span>
+            </div>
 
       <section className="hero">
         <p className="eyebrow">Developer utility</p>
@@ -108,7 +135,7 @@ function App() {
         </p>
       </section>
 
-      <section className="tool">
+      <section className="tool" id="xml-tool">
         <div className="toolbar">
           <span className="live-badge">Live validation</span>
           <button onClick={() => runTransform('format')}>Format</button>
@@ -169,7 +196,7 @@ function App() {
         </section>
       )}
 
-      <section className="features">
+      <section className="features" id="features">
         <article>
           <h2>XML syntax validator</h2>
           <p>Check whether your XML is well-formed before it reaches production.</p>
@@ -189,11 +216,23 @@ function App() {
         <p>XSD validation, file upload, API access and optional AI error explanations.</p>
       </section>
 
-      <footer>
+      <section className="qa-pro-bridge" id="qa-pro">
+        <div>
+          <p className="eyebrow">NEXT LEVEL · ONYX ECOSYSTEM</p>
+          <h2>QA PRO / OMNICORE</h2>
+          <p>Explore the QA PRO ecosystem. This link opens an external website; it does not send your XML or connect to a QA PRO API.</p>
+        </div>
+        <a className="qa-pro-link" href="https://omnicore.cz/" target="_blank" rel="noopener noreferrer">OPEN OMNICORE.CZ <span aria-hidden="true">↗</span></a>
+      </section>
+      <footer className="site-footer">
         <span>xmlvalidatoronline.com</span>
-        <span>QA PRO integration will follow when QA PRO is release-ready.</span>
+        <span>Built for private, browser-side XML checks · QA PRO is an external link.</span>
       </footer>
-    </main>
+          </main>
+        </div>
+        <div className="os-statusbar"><strong><span aria-hidden="true">◈</span> READY.</strong><span className="status-frequency" aria-hidden="true">▂▃▅▃▆▂▃▅▂▇▅▃▂</span><span>64K RETRO · MODERN WEB</span></div>
+      </div>
+    </div>
   )
 }
 

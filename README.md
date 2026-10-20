@@ -70,3 +70,9 @@ An opt-in browser-only panel checks a subset of the published [Heureka XML feed 
 - Availability, destination product pages, category matching, Heureka CPC/Marketplace and shop terms are **not** verified.
 - Client-side size limit: two million characters; first 100 findings shown with full issue counts.
 - Public Cloudflare Worker deployment was smoke-tested on 2026-10-16: https://xmlvalidatoronline.lmd-cf-bridge.workers.dev/ (HTTP 200, `/health`, browser scenarios).
+
+## C64 Ambient Premium interface
+
+The frontend uses a Commodore 64-inspired, pixel-style ONYX OS visual shell. Its ambient starfield, planet and landscape are CSS-only and respect `prefers-reduced-motion`; XML editing and the existing Heureka feed lint remain client-side.
+
+The QA PRO / OMNICORE call-to-action is an **external hyperlink** to `https://omnicore.cz/`, not an API connection, authentication handoff, or data sharing. The XML stays in the current page. The external site's availability and TLS certificate must be verified separately before the hyperlink is promoted as a functioning end-to-end user journey.
