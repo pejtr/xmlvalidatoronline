@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { auditHeurekaFeed } from './heurekaFeed'
 import './App.css'
 
@@ -71,6 +71,9 @@ function minifyXml(xml: string): string {
 function App() {
   const [xml, setXml] = useState(SAMPLE_XML)
   const [showHeurekaAudit, setShowHeurekaAudit] = useState(false)
+  const [feedback, setFeedback] = useState<{ text: string; error: boolean } | null>(null)
+  const editorRef = useRef<HTMLTextAreaElement>(null)
+  const reportRef = useRef<HTMLElement>(null)
   const heurekaReport = useMemo(() => showHeurekaAudit ? auditHeurekaFeed(xml) : null, [xml, showHeurekaAudit])
 
   const validation = useMemo<ValidationResult>(() => {
@@ -81,16 +84,67 @@ function App() {
       : { valid: true, message: 'XML is well-formed.' }
   }, [xml])
 
+  // The report is below the editor: make the result visible after enabling lint.
+  useEffect(() => {
+    if (showHeurekaAudit) reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [showHeurekaAudit])
+
+  const loadSample = (value: string, label: string) => {
+    setXml(value)
+    setShowHeurekaAudit(label === 'Heureka')
+    setFeedback({ text: label + ' XML example loaded.', error: false })
+  }
+
   const runTransform = (type: 'format' | 'minify') => {
+    if (!xml.trim()) {
+      setFeedback({ text: 'Paste or load an XML document first.', error: true })
+      return
+    }
     try {
-      setXml(type === 'format' ? formatXml(xml) : minifyXml(xml))
-    } catch {
-      // Keep the original XML; the live validation status already exposes the parse error.
+      const result = type === 'format' ? formatXml(xml) : minifyXml(xml)
+      setXml(result)
+      setFeedback({
+        text: result === xml
+          ? (type === 'format' ? 'XML is already formatted.' : 'XML is already minified.')
+          : (type === 'format' ? 'XML formatted locally.' : 'XML minified locally.'),
+        error: false,
+      })
+    } catch (error) {
+      setFeedback({
+        text: 'XML could not be transformed: ' + (error instanceof Error ? error.message : 'invalid syntax'),
+        error: true,
+      })
     }
   }
 
   const copyXml = async () => {
-    await navigator.clipboard.writeText(xml)
+    if (!xml) {
+      setFeedback({ text: 'Nothing to copy. Paste XML or load a sample first.', error: true })
+      return
+    }
+    try {
+      if (navigator.clipboard?.writeText && window.isSecureContext) {
+        await navigator.clipboard.writeText(xml)
+      } else {
+        // Fallback for browsers that do not expose the asynchronous Clipboard API.
+        const editor = editorRef.current
+        if (!editor) throw new Error('Editor unavailable')
+        editor.focus()
+        editor.select()
+        if (!document.execCommand('copy')) throw new Error('Copy not permitted')
+        editor.setSelectionRange(0, 0)
+      }
+      setFeedback({ text: 'XML copied to clipboard.', error: false })
+    } catch {
+      setFeedback({ text: 'Copy was blocked by your browser. Select the XML and press Ctrl+C (or Cmd+C).', error: true })
+    }
+  }
+
+  const toggleHeurekaAudit = () => {
+    setShowHeurekaAudit((current) => {
+      setFeedback({ text: current ? 'Heureka feed lint hidden.' : 'Heureka feed lint enabled. See the report below.', error: false })
+      return !current
+    })
   }
 
   return (
@@ -117,7 +171,7 @@ function App() {
           <aside className="os-sidebar" aria-label="Quick navigation">
             <a href="#home"><span aria-hidden="true">⌂</span>HOME</a>
             <a href="#xml-tool" className="selected" aria-current="location"><span aria-hidden="true">⌘</span>XML TOOL</a>
-            <button type="button" onClick={() => setXml(SAMPLE_XML)}><span aria-hidden="true">▣</span>SAMPLE</button>
+            <button type="button" onClick={() => loadSample(SAMPLE_XML, 'Sample')}><span aria-hidden="true">▣</span>SAMPLE</button>
             <a href="#features"><span aria-hidden="true">▤</span>FEATURES</a>
             <a href="#qa-pro"><span aria-hidden="true">◇</span>QA PRO</a>
           </aside>
@@ -137,21 +191,28 @@ function App() {
 
       <section className="tool" id="xml-tool">
         <div className="toolbar">
-          <span className="live-badge">Live validation</span>
-          <button onClick={() => runTransform('format')}>Format</button>
-          <button onClick={() => runTransform('minify')}>Minify</button>
-          <button onClick={() => setXml(SAMPLE_XML)}>Sample</button>
-          <button onClick={() => { setXml(SAMPLE_HEUREKA_XML); setShowHeurekaAudit(true) }}>Heureka sample</button>
-          <button onClick={() => setShowHeurekaAudit((value) => !value)} aria-pressed={showHeurekaAudit}>
+          <button type="button" className="live-badge" onClick={() => setFeedback({ text: validation.valid ? 'Live check: XML is well-formed.' : 'Live check: ' + validation.message, error: !validation.valid })}>Live validation</button>
+          <button type="button" onClick={() => runTransform('format')}>Format</button>
+          <button type="button" onClick={() => runTransform('minify')}>Minify</button>
+          <button type="button" onClick={() => loadSample(SAMPLE_XML, 'Sample')}>Sample</button>
+          <button type="button" onClick={() => loadSample(SAMPLE_HEUREKA_XML, 'Heureka')}>Heureka sample</button>
+          <button type="button" onClick={toggleHeurekaAudit} aria-pressed={showHeurekaAudit}>
             {showHeurekaAudit ? 'Hide Heureka lint' : 'Heureka feed lint'}
           </button>
-          <button onClick={copyXml}>Copy</button>
-          <button onClick={() => setXml('')}>Clear</button>
+          <button type="button" onClick={copyXml}>Copy</button>
+          <button type="button" onClick={() => { setXml(''); setShowHeurekaAudit(false); setFeedback({ text: 'Editor cleared.', error: false }); editorRef.current?.focus() }}>Clear</button>
         </div>
 
+        {feedback && (
+          <div className={`action-feedback ${feedback.error ? 'action-error' : ''}`} role="status" aria-live="polite">
+            {feedback.text}
+          </div>
+        )}
+
         <textarea
+          ref={editorRef}
           value={xml}
-          onChange={(event) => setXml(event.target.value)}
+          onChange={(event) => { setXml(event.target.value); setFeedback(null) }}
           spellCheck={false}
           aria-label="XML input"
           placeholder="Paste XML here..."
@@ -164,7 +225,7 @@ function App() {
       </section>
 
       {heurekaReport && (
-        <section className="heureka-report" aria-label="Preliminary Heureka feed lint">
+        <section className="heureka-report" id="heureka-report" ref={reportRef} aria-label="Preliminary Heureka feed lint">
           <h2>Heureka XML feed — preliminary checks</h2>
           <p>
             Unofficial, limited-scope lint based on public Heureka CZ XML documentation.
