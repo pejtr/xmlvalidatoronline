@@ -141,10 +141,9 @@ function App() {
   }
 
   const toggleHeurekaAudit = () => {
-    setShowHeurekaAudit((current) => {
-      setFeedback({ text: current ? 'Heureka feed lint hidden.' : 'Heureka feed lint enabled. See the report below.', error: false })
-      return !current
-    })
+    const enabled = !showHeurekaAudit
+    setShowHeurekaAudit(enabled)
+    setFeedback({ text: enabled ? 'Heureka feed lint enabled. See the report below.' : 'Heureka feed lint hidden.', error: false })
   }
 
   return (
