@@ -17,3 +17,6 @@
    - Hosting is exclusively **Cloudflare Pages / Workers**.
    - No automatic merges or unverified production deployments.
    - Always run `tsc -b && vite build` before submitting changes.
+
+## Global OMNIverse hosting policy (2026-10-29)
+**BEZ RAILWAY — ONLY CLOUDFLARE.** All new app hosting, preview, prod, APIs, storage, queues and schedulers use Cloudflare Workers/Pages/R2/D1/etc.; never deploy to Railway or use it as fallback. For GPU rendering use owned local compute via authenticated Cloudflare Tunnel/Access or explicitly approved external model APIs. Historic Railway services are migration debt: do not shut down before tested Cloudflare replacement, backup, DNS and rollback. GitHub Actions are optional, local build/E2E/production SHA verification is required. Canonical cross-project policy: https://github.com/pejtr/OPTIMATEO/blob/main/docs/INFRASTRUCTURE_CLOUDFLARE_ONLY.md . Apply to all agents and future changes; do not claim migration without proof.
