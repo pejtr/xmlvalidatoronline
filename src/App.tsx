@@ -201,8 +201,8 @@ function App() {
           <div className="container hero-inner">
             <div className="hero-copy">
               <span className="kicker"><span className="kicker-dot" /> FREE ONLINE XML & SEO TOOLS</span>
-              <h1>XML tools that <span>just work.</span></h1>
-              <p>Generate clean sitemaps, validate XML, and check product feeds — all in one fast, privacy-first workspace.</p>
+              <h1>Free XML sitemap <span>generator &amp; validator.</span></h1>
+              <p>Turn URL lists into clean sitemaps, validate XML and check product feeds — all in one fast, privacy-first workspace.</p>
               <div className="hero-chips"><span>✓ No account needed</span><span>✓ Browser-side processing</span><span>✓ Instant results</span></div>
               <a href="#workspace" className="primary-link">Open free tools <span aria-hidden="true">↗</span></a>
             </div>
