@@ -131,7 +131,12 @@ function App() {
   const heurekaReport = useMemo(() => mode === 'heureka' ? auditHeurekaFeed(xml) : null, [mode, xml])
   const active = TOOLS.find((tool) => tool.id === mode)!
 
-  const changeMode = (next: ToolMode) => { setMode(next); setNotice('') }
+  const changeMode = (next: ToolMode) => {
+    if (xml === SAMPLE_XML && next === 'sitemap') setXml(SAMPLE_SITEMAP)
+    else if (xml === SAMPLE_XML && next === 'heureka') setXml(SAMPLE_HEUREKA)
+    setMode(next)
+    setNotice('')
+  }
   const sample = () => {
     if (mode === 'generator') { setUrls(SAMPLE_URLS); setBaseUrl(''); setLastmod('') }
     else setXml(mode === 'sitemap' ? SAMPLE_SITEMAP : mode === 'heureka' ? SAMPLE_HEUREKA : SAMPLE_XML)
@@ -245,6 +250,7 @@ function App() {
                     <div className="actions-row">
                       <button className="btn btn-primary" type="button" onClick={() => downloadResult('xml')} disabled={!generated.urls.length}>↓ Download sitemap.xml</button>
                       <button className="btn btn-secondary" type="button" onClick={() => downloadResult('txt')} disabled={!generated.urls.length}>TXT</button>
+                      <label className="btn btn-secondary upload-label">↑ Import URL list<input type="file" accept=".txt,.csv,text/plain" onChange={importFile} /></label>
                       <button className="btn btn-secondary" type="button" onClick={copy} disabled={!generated.xml}>Copy XML</button>
                       <button className="btn btn-ghost" type="button" onClick={sample}>Example</button>
                       <button className="btn btn-ghost" type="button" onClick={clear}>Clear</button>
