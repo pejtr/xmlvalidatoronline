@@ -1,78 +1,56 @@
 # XML Validator Online
 
-A privacy-first browser utility for validating, formatting and minifying XML.
+Free browser-side XML and sitemap tools, built with React, TypeScript and Vite for Cloudflare Workers.
 
-## Current capabilities
+## Implemented in this branch
 
-- live XML well-formedness validation using the browser `DOMParser`
-- XML formatter
-- XML minifier
-- copy / clear / sample actions
-- no XML upload in the baseline version — input is processed locally in the browser
-- responsive React + TypeScript UI
+- **Sitemap Generator (manual URL list):** paste up to 1,000 absolute HTTP(S) URLs or relative paths with a base URL; skip invalid/cross-origin links and duplicates; export `sitemap.xml` or `sitemap.txt`; optionally add an accurate `lastmod` date.
+- **Sitemap Validator:** inspect pasted/imported XML `urlset` and `sitemapindex` structure; check the official sitemap namespace, required `loc`, HTTP(S) URLs, duplicates, optional `lastmod` and entry counts. This is a selective linter, not XSD validation.
+- **XML Validator:** local browser `DOMParser` syntax validation, formatting and minification; XML must be well-formed. Format/minify preserve mixed textual content when possible, but the transformations are not canonical XML.
+- **Heureka CZ feed lint:** opt-in, unofficial checks of selected published Heureka XML feed rules. This is not official certification.
+- **Responsive interface:** four tool tabs, status reports, sample data, file import, local downloads and clear limitations.
+
+The generator **does not crawl a website**. A single URL yields a sitemap containing that URL, not a discovered site map. It does not check HTTP status, robots.txt, canonical URLs, indexing or Search Console. Import and processing use browser APIs only.
 
 ## Privacy boundary
 
-The current baseline performs XML parsing and transformations in the browser. The XML entered into the editor is not required to be sent to a backend for validation.
+No pasted XML, imported file or URL list is uploaded to our backend. The frontend contains no third-party runtime script. The generated Cloudflare Worker restricts scripts and connections through a Content Security Policy. The separate QA ecosystem link is an external destination, with no automatic data handoff.
 
-## Roadmap
+Do not deploy third-party marketing scripts into this editor without an explicit privacy/security review. This repository is public; do not commit credentials, user data or private service identifiers.
 
-Planned candidates visible in the application roadmap include:
+## Limits
 
-- XSD validation
-- file upload
-- API access
-- optional AI-assisted error explanations
-- later QA PRO integration when that product is release-ready
-
-Roadmap items are not claims of current functionality.
-
-## Stack
-
-- React 19
-- TypeScript
-- Vite 8
-- Cloudflare deployment tooling
+- Up to **1,000 unique URLs** per generated sitemap; single-origin URLs only.
+- Input limited to **2,000,000 characters** for local processing.
+- XML sitemap protocol allows up to **50,000 entries / 50 MB** per file; these browser tools use deliberately smaller limits.
+- No XSD schema validation, URL fetching, background crawling, sitemap upload or provider certification.
+- Empty/malformed input and DOCTYPE/DTD are rejected by the local validators.
 
 ## Development
 
+Requires a current Node 22+ environment and pnpm.
+
 ```bash
 pnpm install
-pnpm dev
-pnpm build
+pnpm test
 pnpm lint
-```
-
-Cloudflare build:
-
-```bash
+pnpm build
 pnpm cf:build
 ```
 
-## Public project rationale
+Cloudflare deployment is available through `pnpm cf:deploy` only after QA, explicit approval and verified Cloudflare account access. **Repository commits and PRs do not prove any production deployment.**
 
-This repository is intentionally public as a developer utility and collaboration surface. Production credentials and private ONYX / QA PRO internals do not belong here.
+## Release checklist
 
-For broader partner integrations, see:
-https://github.com/pejtr/onyx-partner-network
+1. `pnpm test`, `pnpm lint`, `pnpm build`, `pnpm cf:build` pass.
+2. Browser manual checks: valid/invalid sitemap, duplicates, malformed XML, Heureka sample, local import/export, mobile width 390 px and desktop width 1440 px.
+3. Cloudflare preview `/health`, HTML and static assets check; verify privacy headers.
+4. Review changes, merge, deploy to Cloudflare, verify the actual live hostname and DNS. Keep a rollback SHA.
 
+## References
 
-## Agent handoff
+- [Google Search Central: Build and submit a sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap)
+- [Sitemaps XML protocol](https://www.sitemaps.org/protocol.html)
+- [Heureka XML feed specification](https://sluzby.heureka.cz/napoveda/xml-feed/)
 
-This repository is public. Read `AGENTS.md` and `docs/PUBLIC_REPO_NO_TRUST.md` before non-trivial changes. Public documentation must contain only public-safe information and must not imply production state without verification.
-
-## Heureka CZ feed lint (live; unofficial and not certified)
-
-An opt-in browser-only panel checks a subset of the published [Heureka XML feed specification](https://sluzby.heureka.cz/napoveda/xml-feed/): XML syntax, root/shop items, required item fields, positive numeric price, HTTP(S) product URLs, duplicate IDs and URLs, and warnings for common recommended fields.
-
-- No API key, login, provider API, network fetching or customer feed upload is used.
-- This is not an official Heureka validator, certification or compatibility guarantee.
-- Availability, destination product pages, category matching, Heureka CPC/Marketplace and shop terms are **not** verified.
-- Client-side size limit: two million characters; first 100 findings shown with full issue counts.
-- Public Cloudflare Worker deployment was smoke-tested on 2026-10-16: https://xmlvalidatoronline.lmd-cf-bridge.workers.dev/ (HTTP 200, `/health`, browser scenarios).
-
-## C64 Ambient Premium interface
-
-The frontend uses a Commodore 64-inspired, pixel-style ONYX OS visual shell. Its ambient starfield, planet and landscape are CSS-only and respect `prefers-reduced-motion`; XML editing and the existing Heureka feed lint remain client-side.
-
-The QA PRO / OMNICORE call-to-action is an **external hyperlink** to `https://omnicore.cz/`, not an API connection, authentication handoff, or data sharing. The XML stays in the current page. The external site's availability and TLS certificate must be verified separately before the hyperlink is promoted as a functioning end-to-end user journey.
+Read `AGENTS.md` and `docs/PUBLIC_REPO_NO_TRUST.md` before non-trivial work.
