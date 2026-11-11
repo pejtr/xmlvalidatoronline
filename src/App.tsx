@@ -340,20 +340,34 @@ function App() {
         </section>
 
         <section className="benefits" id="features"><div className="container">
-          <div className="center-heading"><span className="section-kicker">BUILT FOR ENGINEERING TEAMS</span><h2>Small tools, faster debugging</h2><p>Practical checks for XML, integrations, feeds and release preparation.</p></div>
+          <div className="center-heading"><span className="section-kicker">DEVELOPERS × QAPRO</span><h2>From XML checks to reliable QA workflows</h2><p>Use the free tool here. Explore broader engineering QA practices when you need them.</p></div>
           <div className="benefit-grid">
-            <article><span className="benefit-icon">◇</span><h3>Standards-oriented</h3><p>Generate sitemaps with correct XML escaping and the official sitemap namespace.</p></article>
-            <article><span className="benefit-icon">☑</span><h3>Clear validation</h3><p>Spot malformed XML, missing sitemap locations, repeated links and invalid addresses.</p></article>
-            <article><span className="benefit-icon">◎</span><h3>Privacy first</h3><p>Your pasted XML, feed documents and URLs remain in this browser workspace.</p></article>
+            <article><span className="benefit-icon">↗</span><h3>Faster feedback</h3><p>Catch syntax and feed structure problems before they reach production.</p></article>
+            <article><span className="benefit-icon">⬡</span><h3>Repeatable checks</h3><p>Move from one-off validation toward testable engineering processes.</p></article>
+            <article><span className="benefit-icon">♧</span><h3>Evidence for teams</h3><p>Make issues easier to reproduce, discuss and resolve.</p></article>
+            <article><span className="benefit-icon">◇</span><h3>Quality at scale</h3><p>Explore the QAPRO ecosystem for the next stage of your QA workflow.</p></article>
           </div>
         </div></section>
 
         <section className="steps" id="how-it-works"><div className="container">
-          <div className="center-heading"><span className="section-kicker">THREE SIMPLE STEPS</span><h2>From input to clean output</h2></div>
-          <div className="step-grid"><article><b>01</b><h3>Choose a tool</h3><p>Generate sitemaps or validate XML and Heureka feeds.</p></article><article><b>02</b><h3>Paste or import</h3><p>Provide your data; processing stays on your device.</p></article><article><b>03</b><h3>Review & download</h3><p>Fix issues, export sitemap.xml and publish it yourself.</p></article></div>
+          <div className="center-heading"><span className="section-kicker">THREE SIMPLE STEPS</span><h2>Validate quickly, ship confidently</h2></div>
+          <div className="step-grid"><article><b>01</b><h3>Choose a tool</h3><p>Pick XML, sitemap generation, sitemap structure or feed lint.</p></article><article><b>02</b><h3>Paste or open a file</h3><p>Your document stays private inside the browser.</p></article><article><b>03</b><h3>Review real results</h3><p>Fix issues, export a sitemap or copy formatted XML.</p></article></div>
         </div></section>
 
         <section className="qa-banner"><div className="container banner-inner"><div><span className="section-kicker">FROM XML DEBUGGING TO QA WORKFLOWS</span><h2>Explore QAPRO</h2><p>Need QA tooling beyond checking a single document? Discover QAPRO. This opens a separate website; no document contents are transmitted.</p></div><a href={qaProLink('footer')} target="_blank" rel="noopener noreferrer">Explore QAPRO.cz ↗</a></div></section>
+        <section className="tool-roadmap" id="tool-roadmap">
+          <div className="container tool-roadmap-inner">
+            <strong>◇ &nbsp;More developer tools</strong>
+            <div className="coming-tools" aria-label="Planned tools">
+              <span>XML → JSON <small>planned</small></span>
+              <span>JSON Validator <small>planned</small></span>
+              <span>RSS Validator <small>planned</small></span>
+              <span>URL Encoder <small>planned</small></span>
+              <span>HTTP Headers <small>planned</small></span>
+            </div>
+          </div>
+        </section>
+
       </main>
       <footer className="footer"><div className="container footer-inner"><span><strong>XML Validator Online</strong> · Free browser-side XML utilities.</span><span>© 2026 · Privacy-first · Independent Heureka lint</span></div></footer>
     </div>
