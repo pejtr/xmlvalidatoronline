@@ -1,4 +1,4 @@
-import { useMemo, useState, type ChangeEvent } from 'react'
+import { useMemo, useState, type ChangeEvent, type DragEvent } from 'react'
 import { auditHeurekaFeed } from './heurekaFeed'
 import { auditSitemap, createSitemap, MAX_SITEMAP_INPUT_CHARS } from './sitemapTools'
 import './App.css'
@@ -42,10 +42,10 @@ https://example.com/contact
 https://example.com/blog`
 
 const TOOLS: { id: ToolMode; icon: string; label: string; subtitle: string }[] = [
-  { id: 'generator', icon: '↗', label: 'Sitemap Generator', subtitle: 'URL list → XML' },
+  { id: 'xml', icon: '</>', label: 'XML Validator', subtitle: 'Syntax & formatting' },
+  { id: 'generator', icon: '⚯', label: 'Sitemap Generator', subtitle: 'URL list → XML' },
   { id: 'sitemap', icon: '✓', label: 'Sitemap Validator', subtitle: 'Inspect sitemap.xml' },
-  { id: 'xml', icon: '⌘', label: 'XML Validator', subtitle: 'Syntax & formatting' },
-  { id: 'heureka', icon: '▤', label: 'Heureka Feed', subtitle: 'CZ feed lint' },
+  { id: 'heureka', icon: '▤', label: 'Feed Validator', subtitle: 'Heureka CZ lint' },
 ]
 
 function parseXml(xml: string): { valid: boolean; message: string } {
@@ -122,12 +122,13 @@ function download(content: string, filename: string, type: string) {
 }
 
 function App() {
-  const [mode, setMode] = useState<ToolMode>('generator')
+  const [mode, setMode] = useState<ToolMode>('xml')
   const [xml, setXml] = useState(SAMPLE_XML)
   const [urls, setUrls] = useState(SAMPLE_URLS)
   const [baseUrl, setBaseUrl] = useState('')
   const [lastmod, setLastmod] = useState('')
   const [notice, setNotice] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
 
   const generated = useMemo(() => createSitemap(urls, baseUrl, lastmod), [urls, baseUrl, lastmod])
   const sitemapReport = useMemo(() => mode === 'sitemap' ? auditSitemap(xml) : null, [mode, xml])
@@ -188,41 +189,57 @@ function App() {
       <header className="site-header">
         <div className="container header-inner">
           <a className="brand" href="#top" aria-label="XML Validator Online home">
-            <span className="brand-icon" aria-hidden="true">◇</span>
-            <span>XML<span className="brand-accent">VALIDATOR</span><small>ONLINE</small></span>
+            <span className="brand-icon" aria-hidden="true">&lt;/&gt;</span>
+            <span className="brand-wordmark">XML Validator Online<small>Validate · Generate · Format · Feeds</small></span>
           </a>
+          <span className="by-qapro">by <strong>QAPRO<span>.cz</span></strong></span>
           <nav className="main-nav" aria-label="Main navigation">
-            <a href="#workspace">Tools</a>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How it works</a>
-            <a href={qaProLink('nav')} target="_blank" rel="noopener noreferrer">QAPRO ↗</a>
+            <a className="nav-active" href="#workspace">⌘ &nbsp;Tools</a>
+            <a href="#how-it-works">Documentation</a>
+            <a href="#features">Guides</a>
+            <a href={qaProLink('nav')} target="_blank" rel="noopener noreferrer">QAPRO.cz ↗</a>
           </nav>
-          <span className="header-pill"><span className="green-dot" /> FREE · NO SIGN-UP</span>
+          <span className="header-pill"><span className="green-dot" /> FREE DEV TOOL</span>
         </div>
       </header>
 
       <main>
         <section className="hero">
+          <div className="hero-glow" aria-hidden="true" />
           <div className="container hero-inner">
             <div className="hero-copy">
-              <span className="kicker"><span className="kicker-dot" /> FREE DEVELOPER XML & QA TOOLS</span>
-              <h1>Free XML &amp; sitemap tools <span>for developers.</span></h1>
-              <p>Validate XML, generate sitemaps and lint product feeds locally. Fast tools for developers and QA engineers — without registration.</p>
-              <div className="hero-chips"><span>✓ No account needed</span><span>✓ Browser-side processing</span><span>✓ Instant results</span></div>
-              <a href="#workspace" className="primary-link">Open free tools <span aria-hidden="true">↗</span></a>
-              <a href={qaProLink('hero')} className="hero-qapro-link" target="_blank" rel="noopener noreferrer">Discover QAPRO for broader QA workflows ↗</a>
+              <span className="kicker"><span className="kicker-dot" /> FREE DEV TOOL</span>
+              <h1>XML Validator &amp; <span>Sitemap Generator</span></h1>
+              <p>Validate, generate and format XML, sitemaps and product feeds. Made for developers and QA engineers.</p>
+              <div className="hero-chips"><span>✓ Browser-only checks</span><span>✓ No registration</span><span>✓ Free tools</span></div>
+              <a href="#workspace" className="primary-link">Open XML Validator <span aria-hidden="true">↗</span></a>
             </div>
             <div className="hero-visual" aria-hidden="true">
               <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" />
-              <div className="visual-card visual-card-back"><span className="visual-label">SITEMAP.XML</span><code>&lt;urlset&gt;<br />&nbsp; &lt;url&gt;...&lt;/url&gt;<br />&lt;/urlset&gt;</code></div>
-              <div className="visual-card visual-card-front"><span className="visual-success">✓</span><strong>Validation passed</strong><small>Ready for search engines</small><div className="visual-bars"><i /><i /><i /></div></div>
+              <div className="floating-code-icon">&lt;/&gt;</div>
+              <div className="visual-card visual-card-back"><span className="visual-label">CHECK.XML</span><code>&lt;?xml version="1.0"?&gt;<br />&lt;root&gt;<br />&nbsp; &lt;status&gt;ok&lt;/status&gt;<br />&lt;/root&gt;</code></div>
+              <div className="visual-card visual-card-front"><span className="visual-success">✓</span><strong>XML parsed locally</strong><small>Results from your editor, not a server</small></div>
             </div>
+            <aside className="hero-qapro-card" aria-label="Explore QAPRO">
+              <span className="qapro-mini">ENGINEERING ECOSYSTEM</span>
+              <h2>QAPRO<span>.cz</span></h2>
+              <p>Quality assurance workflows for developers and QA teams.</p>
+              <div className="qapro-capabilities">
+                <span>⚡ Automated testing workflows</span>
+                <span>⬡ Web, API &amp; integration QA</span>
+                <span>◈ Reproducible test evidence</span>
+                <span>✧ AI-assisted QA direction</span>
+              </div>
+              <a href={qaProLink('hero')} target="_blank" rel="noopener noreferrer" className="qapro-main-cta">Explore QAPRO.cz <span aria-hidden="true">→</span></a>
+              <div className="tech-badges" aria-label="Developer ecosystem"><span>PW</span><span>CY</span><span>TS</span><span>API</span><span>QA</span></div>
+              <small className="qapro-disclosure">External site · No XML data is shared</small>
+            </aside>
           </div>
         </section>
 
         <section className="workspace-section" id="workspace">
           <div className="container">
-            <div className="section-heading"><div><span className="section-kicker">DEVELOPER WORKSPACE</span><h2>Choose your XML tool</h2><p>Inspect XML and feeds directly in your browser, without an upload.</p></div><span className="privacy-pill">⌁ Files stay on your device</span></div>
+            <div className="section-heading"><div><span className="section-kicker">DEVELOPER WORKSPACE</span><h2>XML tools, all in one place</h2><p>Choose a tool, enter your data and see real local results.</p></div><span className="privacy-pill">▣ Private browser processing</span></div>
             <div className="workspace">
               <div className="tool-selector" role="tablist" aria-label="XML tools">
                 {TOOLS.map((tool) => (
@@ -234,13 +251,13 @@ function App() {
                     <span className="tab-arrow" aria-hidden="true">→</span>
                   </button>
                 ))}
-                <div className="selector-note"><strong>Built for developers & QA teams</strong><p>Validate local XML without registration or uploading your files.</p></div>
+                <a className="more-tools-tab" href="#tool-roadmap">◇ &nbsp;More tools <span>↘</span></a>
               </div>
 
               <div className="work-panel" id="tool-panel" role="tabpanel" aria-labelledby={'tab-' + mode}>
                 <div className="panel-heading">
-                  <div><span className="panel-eyebrow">FREE TOOL</span><h3>{active.label}</h3><p>{mode === 'generator' ? 'Convert a list of URLs into a standards-compliant sitemap.xml file.' : mode === 'sitemap' ? 'Check sitemap structure, required fields, URLs and duplicates.' : mode === 'xml' ? 'Check XML syntax and safely format or minify your document.' : 'Preliminary, unofficial checks for Heureka CZ XML feeds.'}</p></div>
-                  <span className="local-chip">🔒 Local</span>
+                  <div><span className="panel-eyebrow">FREE · BROWSER-BASED</span><h3>{active.label}</h3><p>{mode === 'generator' ? 'Convert a list of URLs into a standards-compliant sitemap.xml file.' : mode === 'sitemap' ? 'Check sitemap structure, required fields, URLs and duplicates.' : mode === 'xml' ? 'Check XML syntax and safely format or minify your document.' : 'Preliminary, unofficial checks for Heureka CZ XML feeds.'}</p></div>
+                  <span className="local-chip">✓ Local processing</span>
                 </div>
 
                 {mode === 'generator' ? (
