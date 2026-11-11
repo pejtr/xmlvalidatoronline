@@ -1,5 +1,18 @@
 # Release checklist — XML Validator Online
 
+## Dark developer cockpit (approved mockup implementation)
+
+- [x] Save visual tokens/layout/behavior in `docs/DESIGN_QAPRO_DEVELOPER_DARK.md`.
+- [x] Implement dark violet hero, QAPRO promo, tool tabs and real status cards.
+- [x] Preserve existing functional validators; add local file drag-and-drop with limits.
+- [x] Clearly mark missing future tools as planned; no fake metrics or non-working premium controls.
+- [ ] Confirm `pnpm lint`, `pnpm build` and Cloudflare Worker build on current design commit.
+- [ ] Run unit tests and browser E2E including drag/drop, keyboard, XML and sitemap downloads.
+- [ ] Screenshot review at 390 and 1440 pixels; verify contrast and no overflow.
+- [ ] Verify QAPRO.cz destination and opt-in funnel before merging/deploying CTAs.
+- [ ] Verify Cloudflare runtime, release SHA and post-deploy E2E before calling it live.
+
+
 ## Developer → QAPRO funnel (2026-11-11)
 
 - [x] Developer-focused UX, SEO copy and QAPRO call-to-action placements.
