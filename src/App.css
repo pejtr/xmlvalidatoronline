@@ -186,3 +186,28 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation: none !important; }
 }
+
+/* Non-intrusive, opt-in developer journey to the separate QA PRO site. */
+.hero-qapro-link {
+  display: inline-flex; align-items: center; margin: 15px 0 0 18px;
+  color: #d6ebff; font-size: 12px; font-weight: 750; text-underline-offset: 3px;
+}
+.hero-qapro-link:hover { color: #fff; }
+.developer-bridge {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 20px 28px; background: #f0f7ff; border-top: 1px solid #dceaf9;
+}
+.developer-bridge > div { flex: 1 1 330px; }
+.developer-bridge strong { display: block; margin: 7px 0 5px; font-size: 15px; color: #15396b; }
+.developer-bridge p { margin: 0; color: #647f9e; font-size: 12px; line-height: 1.5; }
+.developer-bridge a {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  text-decoration: none; border-radius: 9px; padding: 12px 16px;
+  background: #145dc1; color: #fff; font-size: 12px; font-weight: 800;
+}
+.developer-bridge a:hover { background: #0b478e; }
+@media (max-width: 720px) {
+  .hero-qapro-link { display: flex; margin: 19px 0 0; }
+  .developer-bridge { display: block; padding: 20px 17px; }
+  .developer-bridge a { margin-top: 16px; }
+}
