@@ -158,9 +158,7 @@ function App() {
     try { await navigator.clipboard.writeText(value); setNotice('Copied to clipboard.') }
     catch { setNotice('Clipboard not available. Select and copy the text manually.') }
   }
-  const importFile = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
+  const loadLocalFile = async (file: File | undefined) => {
     if (!file) return
     if (file.size > MAX_SITEMAP_INPUT_CHARS) {
       setNotice('File exceeds the 2 MB local processing limit.')
@@ -168,10 +166,24 @@ function App() {
     }
     try {
       const text = await file.text()
+      if (text.length > MAX_SITEMAP_INPUT_CHARS) {
+        setNotice('File exceeds the local 2 million character processing limit.')
+        return
+      }
       if (mode === 'generator') setUrls(text)
       else setXml(text)
-      setNotice('File loaded locally. No upload was made.')
+      setNotice('File opened locally. Nothing was uploaded.')
     } catch { setNotice('Could not read this file.') }
+  }
+  const importFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    void loadLocalFile(file)
+  }
+  const dropLocalFile = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault()
+    setIsDragging(false)
+    void loadLocalFile(event.dataTransfer.files[0])
   }
   const transform = (type: 'format' | 'minify') => {
     try { setXml(type === 'format' ? formatXml(xml) : minifyXml(xml)); setNotice('Transformation completed locally.') }
@@ -287,9 +299,23 @@ function App() {
                   </div>
                 ) : (
                   <div className="panel-body">
-                    <div className="field"><label htmlFor="xml-input">{mode === 'sitemap' ? 'Paste your sitemap XML' : mode === 'heureka' ? 'Paste Heureka XML feed' : 'Paste XML document'}</label>
-                      <textarea id="xml-input" value={xml} onChange={(event) => setXml(event.target.value)} spellCheck={false} placeholder="Paste XML here..." /></div>
+                    <div className="xml-editor-row">
+                      <label className={'upload-dropzone ' + (isDragging ? 'drag-active' : '')}
+                        onDragOver={(event) => { event.preventDefault(); setIsDragging(true) }}
+                        onDragLeave={() => setIsDragging(false)}
+                        onDrop={dropLocalFile}>
+                        <span className="upload-icon" aria-hidden="true">⇧</span>
+                        <strong>Drop XML file here</strong><span>or click to browse</span>
+                        <small>.xml · .txt · max 2 MB</small>
+                        <input type="file" accept=".xml,.txt,text/plain,text/xml,application/xml" onChange={importFile} aria-label="Choose a local XML file" />
+                      </label>
+                      <div className="field xml-field">
+                        <label htmlFor="xml-input">{mode === 'sitemap' ? 'Sitemap XML' : mode === 'heureka' ? 'Heureka feed XML' : 'XML editor'}</label>
+                        <textarea id="xml-input" value={xml} onChange={(event) => setXml(event.target.value)} spellCheck={false} placeholder="Paste XML here..." />
+                      </div>
+                    </div>
                     <div className="actions-row">
+                      <button className="btn btn-primary" type="button" onClick={() => setNotice(mode === 'xml' ? parseXml(xml).message : mode === 'sitemap' ? (auditSitemap(xml).valid ? 'Basic sitemap checks passed.' : 'Sitemap has issues — see details below.') : 'Feed checks updated below.')}>▶ Validate {mode === 'xml' ? 'XML' : mode === 'sitemap' ? 'sitemap' : 'feed'}</button>
                       <label className="btn btn-secondary upload-label">↑ Open file<input type="file" accept=".xml,.txt,.csv,text/plain,text/xml,application/xml" onChange={importFile} /></label>
                       {mode === 'xml' && <><button className="btn btn-secondary" type="button" onClick={() => transform('format')}>Format</button><button className="btn btn-secondary" type="button" onClick={() => transform('minify')}>Minify</button></>}
                       <button className="btn btn-secondary" type="button" onClick={copy} disabled={!xml}>Copy</button>
