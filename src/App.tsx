@@ -5,6 +5,10 @@ import './App.css'
 
 type ToolMode = 'generator' | 'sitemap' | 'xml' | 'heureka'
 
+// Navigation only. No XML, URL lists or editor state is sent to QAPRO.
+const qaProLink = (placement: 'nav' | 'hero' | 'tool' | 'footer') =>
+  `https://qapro.cz/?utm_source=xmlvalidatoronline&utm_medium=referral&utm_campaign=developer_tools&utm_content=${placement}`
+
 const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <catalog>
   <book id="1">
@@ -191,6 +195,7 @@ function App() {
             <a href="#workspace">Tools</a>
             <a href="#features">Features</a>
             <a href="#how-it-works">How it works</a>
+            <a href={qaProLink('nav')} target="_blank" rel="noopener noreferrer">QAPRO ↗</a>
           </nav>
           <span className="header-pill"><span className="green-dot" /> FREE · NO SIGN-UP</span>
         </div>
@@ -200,11 +205,12 @@ function App() {
         <section className="hero">
           <div className="container hero-inner">
             <div className="hero-copy">
-              <span className="kicker"><span className="kicker-dot" /> FREE ONLINE XML & SEO TOOLS</span>
-              <h1>Free XML sitemap <span>generator &amp; validator.</span></h1>
-              <p>Turn URL lists into clean sitemaps, validate XML and check product feeds — all in one fast, privacy-first workspace.</p>
+              <span className="kicker"><span className="kicker-dot" /> FREE DEVELOPER XML & QA TOOLS</span>
+              <h1>Free XML &amp; sitemap tools <span>for developers.</span></h1>
+              <p>Validate XML, generate sitemaps and lint product feeds locally. Fast tools for developers and QA engineers — without registration.</p>
               <div className="hero-chips"><span>✓ No account needed</span><span>✓ Browser-side processing</span><span>✓ Instant results</span></div>
               <a href="#workspace" className="primary-link">Open free tools <span aria-hidden="true">↗</span></a>
+              <a href={qaProLink('hero')} className="hero-qapro-link" target="_blank" rel="noopener noreferrer">Discover QAPRO for broader QA workflows ↗</a>
             </div>
             <div className="hero-visual" aria-hidden="true">
               <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" />
@@ -216,7 +222,7 @@ function App() {
 
         <section className="workspace-section" id="workspace">
           <div className="container">
-            <div className="section-heading"><div><span className="section-kicker">YOUR WORKSPACE</span><h2>Choose your tool</h2><p>Simple input, clear results, no unnecessary steps.</p></div><span className="privacy-pill">⌁ Files stay on your device</span></div>
+            <div className="section-heading"><div><span className="section-kicker">DEVELOPER WORKSPACE</span><h2>Choose your XML tool</h2><p>Inspect XML and feeds directly in your browser, without an upload.</p></div><span className="privacy-pill">⌁ Files stay on your device</span></div>
             <div className="workspace">
               <div className="tool-selector" role="tablist" aria-label="XML tools">
                 {TOOLS.map((tool) => (
@@ -228,7 +234,7 @@ function App() {
                     <span className="tab-arrow" aria-hidden="true">→</span>
                   </button>
                 ))}
-                <div className="selector-note"><strong>Built for developers & SEOs</strong><p>Privacy-first XML processing, without registration.</p></div>
+                <div className="selector-note"><strong>Built for developers & QA teams</strong><p>Validate local XML without registration or uploading your files.</p></div>
               </div>
 
               <div className="work-panel" id="tool-panel" role="tabpanel" aria-labelledby={'tab-' + mode}>
@@ -279,6 +285,10 @@ function App() {
                     <p className="disclaimer">Parsed in your browser. No document upload, server-side validation or XSD validation.</p>
                   </div>
                 )}
+                <aside className="developer-bridge" aria-label="QAPRO developer tools">
+                  <div><span className="panel-eyebrow">NEXT STEP FOR DEVELOPERS</span><strong>Need a broader QA workflow?</strong><p>Explore QAPRO beyond single-file validation. External destination; your XML and URL lists are not shared.</p></div>
+                  <a href={qaProLink('tool')} target="_blank" rel="noopener noreferrer">Explore QAPRO ↗</a>
+                </aside>
                 <div className="panel-footer"><span>✓ No sign-up</span><span>✓ No XML upload</span><span>✓ Private by default</span></div>
                 {notice && <p className="notice" role="status">{notice}</p>}
               </div>
@@ -287,7 +297,7 @@ function App() {
         </section>
 
         <section className="benefits" id="features"><div className="container">
-          <div className="center-heading"><span className="section-kicker">BUILT FOR YOUR WORKFLOW</span><h2>Everything you need for clean XML</h2><p>Practical tools for websites, feeds and technical SEO.</p></div>
+          <div className="center-heading"><span className="section-kicker">BUILT FOR ENGINEERING TEAMS</span><h2>Small tools, faster debugging</h2><p>Practical checks for XML, integrations, feeds and release preparation.</p></div>
           <div className="benefit-grid">
             <article><span className="benefit-icon">◇</span><h3>Standards-oriented</h3><p>Generate sitemaps with correct XML escaping and the official sitemap namespace.</p></article>
             <article><span className="benefit-icon">☑</span><h3>Clear validation</h3><p>Spot malformed XML, missing sitemap locations, repeated links and invalid addresses.</p></article>
@@ -300,7 +310,7 @@ function App() {
           <div className="step-grid"><article><b>01</b><h3>Choose a tool</h3><p>Generate sitemaps or validate XML and Heureka feeds.</p></article><article><b>02</b><h3>Paste or import</h3><p>Provide your data; processing stays on your device.</p></article><article><b>03</b><h3>Review & download</h3><p>Fix issues, export sitemap.xml and publish it yourself.</p></article></div>
         </div></section>
 
-        <section className="qa-banner"><div className="container banner-inner"><div><span className="section-kicker">FOR TECHNICAL TEAMS</span><h2>Need more advanced QA workflows?</h2><p>Explore the wider QA ecosystem. This is an external link; no XML is transmitted.</p></div><a href="https://omnicore.cz/" target="_blank" rel="noopener noreferrer">Explore QA tools ↗</a></div></section>
+        <section className="qa-banner"><div className="container banner-inner"><div><span className="section-kicker">FROM XML DEBUGGING TO QA WORKFLOWS</span><h2>Explore QAPRO</h2><p>Need QA tooling beyond checking a single document? Discover QAPRO. This opens a separate website; no document contents are transmitted.</p></div><a href={qaProLink('footer')} target="_blank" rel="noopener noreferrer">Explore QAPRO.cz ↗</a></div></section>
       </main>
       <footer className="footer"><div className="container footer-inner"><span><strong>XML Validator Online</strong> · Free browser-side XML utilities.</span><span>© 2026 · Privacy-first · Independent Heureka lint</span></div></footer>
     </div>
