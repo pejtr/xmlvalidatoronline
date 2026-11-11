@@ -18,6 +18,16 @@ No pasted XML, imported file or URL list is uploaded to our backend. The fronten
 
 Do not deploy third-party marketing scripts into this editor without an explicit privacy/security review. This repository is public; do not commit credentials, user data or private service identifiers.
 
+## Developer acquisition → QAPRO
+
+The free XML utility is positioned for developers and QA engineers. The product stays useful without a login, payment, or uploading documents. Contextual outbound links let interested visitors **choose** to open `https://qapro.cz/` to explore the separate QAPRO product.
+
+- Link destinations contain only fixed campaign attribution (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`).
+- XML content, imported files, page lists, errors, test output and other editor state are **never placed into the outbound URL**.
+- No automatic redirects, account creation, form submission, data transmission or paid-product promise.
+- **Release gate:** verify destination DNS, HTTPS, relevant public page and working next step before publishing live CTAs. Source code does not prove QAPRO.cz is live.
+- Conversion events and purchases are not implemented or verified. Tracking may be added only after privacy review and explicit approval.
+
 ## Limits
 
 - Up to **1,000 unique URLs** per generated sitemap; single-origin URLs only.
