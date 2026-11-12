@@ -18,6 +18,27 @@ No pasted XML, imported file or URL list is uploaded to our backend. The fronten
 
 Do not deploy third-party marketing scripts into this editor without an explicit privacy/security review. This repository is public; do not commit credentials, user data or private service identifiers.
 
+## Developer acquisition → QAPRO
+
+The free XML utility is positioned for developers and QA engineers. The product stays useful without a login, payment, or uploading documents. Contextual outbound links let interested visitors **choose** to open `https://qapro.cz/` to explore the separate QAPRO product.
+
+- Link destinations contain only fixed campaign attribution (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`).
+- XML content, imported files, page lists, errors, test output and other editor state are **never placed into the outbound URL**.
+- No automatic redirects, account creation, form submission, data transmission or paid-product promise.
+- **Release gate:** verify destination DNS, HTTPS, relevant public page and working next step before publishing live CTAs. Source code does not prove QAPRO.cz is live.
+- Conversion events and purchases are not implemented or verified. Tracking may be added only after privacy review and explicit approval.
+
+## Dark developer design system
+
+The visual design approved for the XML Validator/QAPRO developer journey is captured in [DESIGN_QAPRO_DEVELOPER_DARK.md](docs/DESIGN_QAPRO_DEVELOPER_DARK.md).
+
+- Dark violet/blue glass panels, CSS-only hero code illustration, QAPRO feature card, horizontal tool tabs and a two-column editor.
+- Import through file picker or drag/drop uses the local File API with size and character limits; **no XML content is uploaded**.
+- Current working tabs: XML validation, sitemap generation, sitemap structure checking, Heureka CZ feed lint.
+- Additional tools shown with an explicit `planned` marker are **not implemented**; do not promise XSD validation or automatic crawling.
+- QAPRO CTAs remain opt-in and send only constant UTM campaign parameters, not editor content.
+- CSS implements 390 px and 1440 px responsive targets; manual visual QA remains necessary before production deployment.
+
 ## Limits
 
 - Up to **1,000 unique URLs** per generated sitemap; single-origin URLs only.

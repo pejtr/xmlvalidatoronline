@@ -1,5 +1,30 @@
 # Release checklist — XML Validator Online
 
+## Dark developer cockpit (approved mockup implementation)
+
+- [x] Save visual tokens/layout/behavior in `docs/DESIGN_QAPRO_DEVELOPER_DARK.md`.
+- [x] Implement dark violet hero, QAPRO promo, tool tabs and real status cards.
+- [x] Preserve existing functional validators; add local file drag-and-drop with limits.
+- [x] Clearly mark missing future tools as planned; no fake metrics or non-working premium controls.
+- [ ] Confirm `pnpm lint`, `pnpm build` and Cloudflare Worker build on current design commit.
+- [ ] Run unit tests and browser E2E including drag/drop, keyboard, XML and sitemap downloads.
+- [ ] Screenshot review at 390 and 1440 pixels; verify contrast and no overflow.
+- [ ] Verify QAPRO.cz destination and opt-in funnel before merging/deploying CTAs.
+- [ ] Verify Cloudflare runtime, release SHA and post-deploy E2E before calling it live.
+
+
+## Developer → QAPRO funnel (2026-11-11)
+
+- [x] Developer-focused UX, SEO copy and QAPRO call-to-action placements.
+- [x] Fixed UTM attribution only; never put editor state or user-entered XML in the destination link.
+- [x] Replace generic QA destination with the requested QAPRO.cz URL in the code.
+- [ ] **P0:** verify QAPRO.cz resolves publicly and serves HTTPS with the expected developer-facing page.
+- [ ] **P0:** verify QAPRO's relevant CTA / next step receives an opt-in human click and works end-to-end.
+- [ ] **P0:** inspect the release on 390 px / 1440 px and check external-tab security and link attribution.
+- [ ] **P0:** no live link deployment until QAPRO destination is working; status must remain unverified without live evidence.
+- [ ] Count real referrals and customer requests separately from paid orders; do not infer revenue from clicks.
+
+
 ## Sitemap tools / premium interface (branch: feat/sitemap-tools-premium-20261111)
 
 - [x] Add client-side sitemap generation from entered URLs, optional accurate lastmod, XML/TXT downloads.
